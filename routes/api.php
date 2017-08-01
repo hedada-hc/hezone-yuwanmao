@@ -17,4 +17,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/v1/lotter','LotterController@Lotter');
+Route::get('/v1/lotter','LottersController@luck28');

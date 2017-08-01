@@ -20,6 +20,8 @@ class CreateLottersTable extends Migration
             $table->integer('num2')->comment("开奖号码二");
             $table->integer('num3')->comment("开奖号码三");
             $table->integer('lotter_res')->comment("开奖结果");
+            $table->integer('lotter_count')->default(0)->comment("中奖人数");
+            $table->json()
             $table->timestamps();
         });
     }
