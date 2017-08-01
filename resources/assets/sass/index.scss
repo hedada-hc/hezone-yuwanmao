@@ -1,0 +1,28 @@
+@charset "utf-8";
+@import 'mixin';
+@import 'head'; //头部css
+@import 'game';//游戏区域css
+@import 'footer';//底部区域
+$color: #f2f2f2;
+$z-color: #ff510c; 
+$font-color: #ff7300;
+
+a{
+	text-decoration: none;
+	text-align: center;
+	color: $color;
+	line-height: 30px;
+}
+ul{margin:0px;padding:0px;}
+li{
+	list-style:none;
+}
+body{
+	font-family: "微软雅黑";
+	margin: 0px;
+	padding: 0px;
+	background: $color;
+	.gloden{
+		color: #ff500b;
+	}
+}
