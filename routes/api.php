@@ -18,3 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/v1/lotter','LottersController@luck28');
+Route::get("/v1/query","LottersController@queryLotter");
+Route::get("/v1/test","LottersController@test");
+Route::get("/v1/getLotters","LottersController@getLotters");

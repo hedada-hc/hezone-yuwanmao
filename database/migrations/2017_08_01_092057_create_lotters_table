@@ -21,7 +21,8 @@ class CreateLottersTable extends Migration
             $table->integer('num3')->comment("开奖号码三");
             $table->integer('lotter_res')->comment("开奖结果");
             $table->integer('lotter_count')->default(0)->comment("中奖人数");
-            $table->json()
+            $table->json("odds")->nullabet()->comment("该期赔率");
+            $table->smallInteger("game_type")->default(0)->comment("游戏类型");
             $table->timestamps();
         });
     }

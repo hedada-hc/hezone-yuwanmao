@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(3);
+var bind = __webpack_require__(4);
 var isBuffer = __webpack_require__(18);
 
 /*global toString:true*/
@@ -375,6 +375,103 @@ module.exports = {
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// this module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -397,10 +494,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(4);
+    adapter = __webpack_require__(5);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(4);
+    adapter = __webpack_require__(5);
   }
   return adapter;
 }
@@ -474,7 +571,7 @@ module.exports = defaults;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20)))
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports) {
 
 var g;
@@ -501,7 +598,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -519,7 +616,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -530,7 +627,7 @@ var settle = __webpack_require__(22);
 var buildURL = __webpack_require__(24);
 var parseHeaders = __webpack_require__(25);
 var isURLSameOrigin = __webpack_require__(26);
-var createError = __webpack_require__(5);
+var createError = __webpack_require__(6);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(27);
 
 module.exports = function xhrAdapter(config) {
@@ -706,7 +803,7 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -731,7 +828,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -743,7 +840,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -769,108 +866,11 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// this module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(10);
-module.exports = __webpack_require__(43);
+module.exports = __webpack_require__(58);
 
 
 /***/ }),
@@ -896,8 +896,26 @@ window.Vue = __webpack_require__(36);
 
 Vue.component('example', __webpack_require__(37));
 Vue.component('demo', __webpack_require__(40));
+Vue.component('gameluck', __webpack_require__(43));
+Vue.component('gamelotterlist', __webpack_require__(46));
+Vue.component('gameorderlist', __webpack_require__(49));
+Vue.component('gamerankinglist', __webpack_require__(52));
+Vue.component('danmu', __webpack_require__(55));
 var app = new Vue({
-  el: '#app'
+  el: '#app',
+  data: {
+    "closeLogin": true
+  },
+  methods: {
+    login: function login() {
+      var status = $(".login").eq(0).attr("style");
+      if (/none/.test(status) || status == null) {
+        $(".login").show();
+      } else {
+        $(".login").hide();
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -18048,7 +18066,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(13)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(13)(module)))
 
 /***/ }),
 /* 13 */
@@ -30735,9 +30753,9 @@ module.exports = __webpack_require__(17);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(3);
+var bind = __webpack_require__(4);
 var Axios = __webpack_require__(19);
-var defaults = __webpack_require__(1);
+var defaults = __webpack_require__(2);
 
 /**
  * Create an instance of Axios
@@ -30770,9 +30788,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(7);
+axios.Cancel = __webpack_require__(8);
 axios.CancelToken = __webpack_require__(34);
-axios.isCancel = __webpack_require__(6);
+axios.isCancel = __webpack_require__(7);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -30820,7 +30838,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(1);
+var defaults = __webpack_require__(2);
 var utils = __webpack_require__(0);
 var InterceptorManager = __webpack_require__(29);
 var dispatchRequest = __webpack_require__(30);
@@ -31122,7 +31140,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(5);
+var createError = __webpack_require__(6);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -31541,8 +31559,8 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(31);
-var isCancel = __webpack_require__(6);
-var defaults = __webpack_require__(1);
+var isCancel = __webpack_require__(7);
+var defaults = __webpack_require__(2);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -31694,7 +31712,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(7);
+var Cancel = __webpack_require__(8);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -41878,14 +41896,14 @@ Vue$3.compile = compileToFunctions;
 
 module.exports = Vue$3;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var Component = __webpack_require__(8)(
+var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(38),
   /* template */
@@ -41983,7 +42001,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var Component = __webpack_require__(8)(
+var Component = __webpack_require__(1)(
   /* script */
   __webpack_require__(41),
   /* template */
@@ -42036,7 +42054,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c("div")
+  return _c('h2', [_vm._v("测试vue模板")])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -42048,6 +42066,741 @@ if (false) {
 
 /***/ }),
 /* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(44),
+  /* template */
+  __webpack_require__(45),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "D:\\code\\php\\hezone-yuwanmao\\resources\\assets\\js\\components\\game\\GameLuck28.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] GameLuck28.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-165d5eb7", Component.options)
+  } else {
+    hotAPI.reload("data-v-165d5eb7", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    mounted: function mounted() {
+        console.log('Component mounted.');
+    },
+    data: function data() {
+        return {
+            "username": null,
+            "password": null
+        };
+    },
+
+    methods: {
+        login: function login() {
+            var _this = this;
+
+            axios.get('api/v1/lotter').then(function (response) {
+                console.log(response, _this.username, _this.password);
+            });
+        },
+        hide: function hide(e) {
+            /*
+            		 * 点击遮罩层则隐藏
+            */
+            if (e.srcElement.className == "login") {
+                $(".login").hide();
+            }
+        }
+    }
+});
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "login",
+    on: {
+      "click": function($event) {
+        _vm.hide($event)
+      }
+    }
+  }, [_c('div', {
+    staticClass: "login_t"
+  }, [_c('div', {
+    staticClass: "login_win"
+  }, [_c('p', {
+    staticClass: "login_title"
+  }, [_vm._v("鱼丸登录")]), _vm._v(" "), _c('div', {
+    staticClass: "login_input"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.username),
+      expression: "username"
+    }],
+    attrs: {
+      "type": "text",
+      "name": "username",
+      "placeholder": "请输入账号/手机号码/ID"
+    },
+    domProps: {
+      "value": (_vm.username)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.username = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div', {
+    staticClass: "login_input login_password"
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.password),
+      expression: "password"
+    }],
+    attrs: {
+      "type": "password",
+      "name": "password",
+      "placeholder": "请输入密码"
+    },
+    domProps: {
+      "value": (_vm.password)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.password = $event.target.value
+      }
+    }
+  })]), _vm._v(" "), _c('div'), _vm._v(" "), _c('div', {
+    staticClass: "login_submit",
+    on: {
+      "click": _vm.login
+    }
+  }, [_vm._v("\n\t\t\t\t\t立即登录\n\t\t\t\t")])]), _vm._v(" "), _c('span', {
+    staticClass: "login_glod"
+  })])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-165d5eb7", module.exports)
+  }
+}
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(47),
+  /* template */
+  __webpack_require__(48),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "D:\\code\\php\\hezone-yuwanmao\\resources\\assets\\js\\components\\game\\GameluckList.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] GameluckList.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0d275acf", Component.options)
+  } else {
+    hotAPI.reload("data-v-0d275acf", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	mounted: function mounted() {
+		var _this = this;
+
+		axios.get("http://www.yuwan.com/api/v1/query?type=1").then(function (response) {
+			_this.lotters = response.data;
+			console.log(_this.lotters);
+		});
+	},
+	data: function data() {
+		return {
+			"data": false,
+			"lotters": null
+		};
+	},
+
+	methods: {
+		kaijiang: function kaijiang() {
+			var _this2 = this;
+
+			axios.get('api/v1/lotter').then(function (response) {
+				console.log(response, _this2.username, _this2.password);
+			});
+		}
+	}
+});
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "game_luck"
+  }, [_c('table', [_vm._m(0), _vm._v(" "), _vm._l((_vm.lotters), function(item, index) {
+    return _c('tr', [_c('td', [_vm._v(_vm._s(item.id))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(item.lotter_time))]), _vm._v(" "), (item.num1) ? _c('td', [_vm._v(_vm._s(item.num1) + "+" + _vm._s(item.num2) + "+" + _vm._s(item.num3) + "="), _c('span', {
+      staticClass: "game_luck_num"
+    }, [_vm._v(_vm._s(item.lotter_res))])]) : _c('td', [_c('span', {
+      staticClass: "game_luck_num game_luck_x"
+    }, [_vm._v("?")])]), _vm._v(" "), _c('td', [_vm._v("25,351,631,112")]), _vm._v(" "), _c('td', {
+      staticClass: "game_luck_zhong"
+    }, [_c('a', {
+      attrs: {
+        "href": "#"
+      }
+    }, [_vm._v(_vm._s(item.lotter_count))])]), _vm._v(" "), _vm._m(1, true), _vm._v(" "), _c('td', [(item.num1) ? _c('div', {
+      staticClass: "game_luck_btn_jing"
+    }, [_vm._v("竞猜")]) : _c('div', {
+      staticClass: "game_luck_btn_yikai"
+    }, [_vm._v("已开")])])])
+  })], 2)])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('tr', [_c('th', [_vm._v("竞猜期号")]), _vm._v(" "), _c('th', [_vm._v("开奖时间")]), _vm._v(" "), _c('th', [_vm._v("竞猜结果")]), _vm._v(" "), _c('th', [_vm._v("金币总数")]), _vm._v(" "), _c('th', [_vm._v("中奖人数")]), _vm._v(" "), _c('th', [_vm._v("收入/投入")]), _vm._v(" "), _c('th', [_vm._v("竞猜")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('td', [_c('span', {
+    staticClass: "game_luck_shou"
+  }, [_vm._v("收:24,531,971")]), _vm._v(" "), _c('span', [_vm._v("竟:2,000,000")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-0d275acf", module.exports)
+  }
+}
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(50),
+  /* template */
+  __webpack_require__(51),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "D:\\code\\php\\hezone-yuwanmao\\resources\\assets\\js\\components\\game\\GameOrderlist.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] GameOrderlist.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-fc5422c8", Component.options)
+  } else {
+    hotAPI.reload("data-v-fc5422c8", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	mounted: function mounted() {},
+	data: function data() {
+		return {
+			orderList: [{ headPic: "./images/headPic2.gif", name: "河里浪", profit: "234,561,789", qihao: 758194, status: 1 }, { headPic: "./images/headPic.jpg", name: "天天赚钱啊", profit: "-189,261,419", qihao: 758194, status: 0 }]
+		};
+	},
+
+	methods: {}
+});
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "game_time_right"
+  }, _vm._l((_vm.orderList), function(item, index) {
+    return _c('div', {
+      staticClass: "game_time_member"
+    }, [_c('span', {
+      staticClass: "game_time_member_title"
+    }, [_vm._v("第 "), _c('span', [_vm._v(_vm._s(item.qihao))]), _vm._v(" 期最强王者")]), _vm._v(" "), _c('img', {
+      attrs: {
+        "width": "36",
+        "src": item.headPic
+      }
+    }), _vm._v(" "), _c('div', {
+      staticClass: "game_time_member_info"
+    }, [_c('span', [_vm._v(_vm._s(item.name))]), _vm._v(" "), _c('span', [_vm._v("纯亏盈:"), _c('span', {
+      class: item.status == 1 ? 'game_time_shou' : 'game_time_kui'
+    }, [_vm._v(_vm._s(item.profit))])])])])
+  }))
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-fc5422c8", module.exports)
+  }
+}
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(53),
+  /* template */
+  __webpack_require__(54),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "D:\\code\\php\\hezone-yuwanmao\\resources\\assets\\js\\components\\game\\GameRankingList.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] GameRankingList.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5cf76cb8", Component.options)
+  } else {
+    hotAPI.reload("data-v-5cf76cb8", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	mounted: function mounted() {},
+	data: function data() {
+		return {
+			winList: [{ name: "伤痛不过百日", profit: 183561124, bonus: 3000 }, { name: "#状态进行中", profit: 163697451, bonus: 2000 }, { name: "゛爱你の不止两三天ヾ", profit: 133987431, bonus: 1000 }, { name: "℡ Sunny ゛", profit: 132121345, bonus: 500 }, { name: "頸ょ鮮艸莓", profit: 111235472, bonus: 500 }, { name: "非你不爱。", profit: 103214512, bonus: 300 }, { name: "再鬧我急眼啊", profit: 99123671, bonus: 300 }, { name: "回妆染痛颜。︶", profit: 93311782, bonus: 200 }, { name: "狂风中拥抱你", profit: 87614723, bonus: 200 }, { name: "忙晕了~~", profit: 77694831, bonus: 100 }]
+		};
+	},
+
+	methods: {
+		toThousands: function toThousands(num) {
+			//金额格式化 183561124 -> 183,561,124
+			var result = [],
+			    counter = 0;
+			num = (num || 0).toString().split('');
+			for (var i = num.length - 1; i >= 0; i--) {
+				counter++;
+				result.unshift(num[i]);
+				if (!(counter % 3) && i != 0) {
+					result.unshift(',');
+				}
+			}
+			return result.join('');
+		},
+		toName: function toName(name) {
+			//名称格式化 伤痛不过百日 -> 伤痛不**
+			return name.substr(0, 2) + "**";
+		}
+	}
+});
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('table', [_vm._m(0), _vm._v(" "), _vm._l((_vm.winList), function(item, index) {
+    return _c('tr', {
+      staticClass: "game_ranking_tr"
+    }, [(index <= 2) ? _c('td', [_c('i', {
+      class: index == 0 ? 'game_ranking_no1' : '' || index == 1 ? 'game_ranking_no2' : '' || index == 2 ? 'game_ranking_no3' : ''
+    })]) : _c('td', [_vm._v(_vm._s(index + 1))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.toName(item.name)))]), _vm._v(" "), _c('td', [_vm._v(_vm._s(_vm.toThousands(item.profit))), _c('i')]), _vm._v(" "), _c('td', [_vm._v(_vm._s(item.bonus) + "万")])])
+  })], 2)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('tr', [_c('th', [_vm._v("排名")]), _vm._v(" "), _c('th', [_vm._v("昵称")]), _vm._v(" "), _c('th', [_vm._v("盈利")]), _vm._v(" "), _c('th', [_vm._v("奖励")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-5cf76cb8", module.exports)
+  }
+}
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__(1)(
+  /* script */
+  __webpack_require__(56),
+  /* template */
+  __webpack_require__(57),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "D:\\code\\php\\hezone-yuwanmao\\resources\\assets\\js\\components\\game\\DanMu.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] DanMu.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-625b491b", Component.options)
+  } else {
+    hotAPI.reload("data-v-625b491b", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 56 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+	mounted: function mounted() {
+		setInterval(this.lottorTime, 1000);
+		setInterval(this.danmu, 100);
+	},
+	data: function data() {
+		return {
+			"danmuData": [{ "title": "测试弹幕系统啊", "nick": "hezone", "jinbi": 123541325, "headPic": "./images/headPic.jpg", "type": 0 }, { "title": "测试红包弹幕消息啊", "nick": "红包啊", "jinbi": 123541325, "headPic": "./images/headPic2.gif", "type": 1 }, { "title": "测试弹幕系统啊", "nick": "hezone", "jinbi": 123541325, "headPic": "./images/headPic.jpg", "type": 0 }],
+			left: 0,
+			time: 90
+		};
+	},
+
+	methods: {
+		sendDanMu: function sendDanMu() {
+			console.log({ "title": "测试弹幕系统啊", "nick": "hezone", "jinbi": 123541325, "headPic": "./images/headPic.jpg", "type": 0 });
+		},
+		lottorTime: function lottorTime() {
+			if (this.time <= 0) {
+				this.time = 90;
+			} else {
+				this.time -= 1;
+			}
+		},
+		danmu: function danmu() {
+			if ($(".game_danmu_content ul").width() > Math.abs(this.left)) {
+				this.left -= 10;
+				$(".game_danmu_content ul").animate({ "left": this.left + "px" });
+			} else {
+				this.left = Math.abs(this.left);
+				$(".game_danmu_content ul").animate({ "left": this.left + "px" });
+				this.left -= 10;
+				$(".game_danmu_content ul").animate({ "left": this.left + "px" });
+			}
+		}
+	}
+});
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "game_danmu"
+  }, [_vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "game_danmu_block"
+  }), _vm._v(" "), _c('div', {
+    staticClass: "game_danmu_tag"
+  }, [_vm._v("\n\t\t鱼丸弹幕\n\t")]), _vm._v(" "), _c('div', {
+    staticClass: "game_danmu_content"
+  }, [_c('ul', _vm._l((_vm.danmuData), function(danmus) {
+    return _c('li', {
+      class: danmus.type ? 'game_danmu_hongbao_border' : ''
+    }, [(danmus.type == 0) ? _c('a', {
+      attrs: {
+        "href": "http://www.yuwanmao.com/member/136411"
+      }
+    }, [_c('img', {
+      attrs: {
+        "width": "32",
+        "src": danmus.headPic
+      }
+    }), _vm._v(" "), _c('div', {
+      staticClass: "game_danmu_content_msg"
+    }, [_c('span', [_vm._v(_vm._s(danmus.title))]), _vm._v(" "), _c('span', {
+      staticClass: "game_danmu_name"
+    }, [_vm._v(_vm._s(danmus.nick) + "  "), _c('p', [_vm._v("盈利：13,561,210")])])])]) : _c('a', {
+      attrs: {
+        "href": "http://www.yuwanmao.com/member/136411"
+      }
+    }, [_c('img', {
+      attrs: {
+        "width": "32",
+        "src": danmus.headPic
+      }
+    }), _vm._v(" "), _vm._m(1, true)])])
+  }))]), _vm._v(" "), _c('div', {
+    staticClass: "game_danmu_send",
+    on: {
+      "click": _vm.sendDanMu
+    }
+  }, [_vm._v("\n\t\t发送弹幕\n\t")])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "game_danmu_tanchuang"
+  }, [_c('h1', [_vm._v("测试发送弹幕")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "game_danmu_content_msg game_danmu_hongbao"
+  }, [_c('span', [_vm._v("今天赚了很多来一波红包给你们")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-625b491b", module.exports)
+  }
+}
+
+/***/ }),
+/* 58 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

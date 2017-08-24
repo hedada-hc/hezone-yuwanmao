@@ -17,6 +17,24 @@ window.Vue = require('vue');
 
 Vue.component('example', require('./components/Example.vue'));
 Vue.component('demo',require('./components/DemoData.vue'));
+Vue.component('gameluck', require('./components/game/GameLuck28'));
+Vue.component('gamelotterlist', require("./components/game/GameluckList"));
+Vue.component('gameorderlist', require("./components/game/GameOrderlist"));
+Vue.component('gamerankinglist', require("./components/game/GameRankingList"));
+Vue.component('danmu', require("./components/game/DanMu"));
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    data:{
+    	"closeLogin": true,
+    },
+    methods:{
+    	login(){
+            var status = $(".login").eq(0).attr("style");
+            if(/none/.test(status) || status == null){
+    			$(".login").show();
+            }else{
+                $(".login").hide();
+            }
+		}
+    }
 });

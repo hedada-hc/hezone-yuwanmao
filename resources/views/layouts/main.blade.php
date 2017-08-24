@@ -7,13 +7,15 @@
 	<meta name="keywords" content=网赚,网络兼职,玩游戏赚钱,网络赚钱,网赚平台,鱼丸猫>
 	<meta name="description" content=鱼丸猫是一个网络兼职平台，用户通过完成“玩游戏赚钱、打码赚钱、完成任务”等操作，来实现网上赚钱，让用户能在工作之余或者玩游戏的同时赚到钱。>
 	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<link rel="stylesheet" type="text/css" href="{{asset('css/index.css')}}">
-	<script type="text/javascript" src="{{asset('js/jquery.min.js')}}"></script>
-	<script type="text/javascript" src="{{asset('js/layer.js')}}"></script>
+	<link rel="stylesheet" type="text/css" href="{{mix('css/index.css')}}">
+	<script type="text/javascript" src="{{mix('js/layer.js')}}"></script>
 	
 </head>
 <body>
 <div id="app">
+
+<!-- 弹窗 -->
+<gameluck></gameluck>
 <!-- 头部开始 -->
 	<nav class="head">
 		<div class="head_top">
@@ -28,7 +30,7 @@
 				<li class="head_top_line"></li>
 				<li class="head_top_right head_top_reg"><a href="#">注册<span class="head_top_reward">奖2元</span></a></li>
 				<li class="head_top_line"></li>
-				<li class="head_top_right"><a href="#">登录</a></li>
+				<li class="head_top_right"><a v-on:click="login">登录</a></li>
 			</ul>
 
 			<div class="head_min">
@@ -72,7 +74,6 @@
 	</div>
 </div>
 </div>
-<script type="text/javascript" src="{{asset('js/vue.js')}}"></script>
-<script type="text/javascript" src="{{asset('js/index.js')}}"></script>
+<script type="text/javascript" src="{{mix('js/app.js')}}"></script>
 </body>
 </html>
