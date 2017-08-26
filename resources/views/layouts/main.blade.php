@@ -8,8 +8,15 @@
 	<meta name="description" content=鱼丸猫是一个网络兼职平台，用户通过完成“玩游戏赚钱、打码赚钱、完成任务”等操作，来实现网上赚钱，让用户能在工作之余或者玩游戏的同时赚到钱。>
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="stylesheet" type="text/css" href="{{mix('css/index.css')}}">
-	<script type="text/javascript" src="{{mix('js/layer.js')}}"></script>
-	
+	<script type="text/javascript" src="./fonts/ali/iconfont.js"></script>
+    <style type="text/css">
+        .icon {
+           width: 1em; height: 1em;
+           vertical-align: -0.15em;
+           fill: currentColor;
+           overflow: hidden;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
@@ -63,7 +70,42 @@
 	<div class="footer_top">
 		<div class="footer_top_content">
 			<div class="footer_content">
-				<a href=""></a>
+				<ul>
+					<li>
+						<a href=""></a>
+					</li>
+					<li>
+						<a>yuwanmao</a>
+						<span>扫一扫关注鱼丸微信</span>
+						<span>每日红包领到手发抖</span>
+					</li>
+					<li>
+						<p>友情链接/合作伙伴</p>
+						<nav>
+							<a target="_black" href="http://www.pceggs.com/">PC蛋蛋</a>
+							<a target="_black" href="http://www.juxiangyou.com/">聚享游</a>
+							<a target="_black" href="http://www.kuailezhuan.com/">快乐赚</a>
+							<a target="_black" href="http://www.ttz.com/">天天赚</a>
+							<a target="_black" href="http://www.ji7.com/">集趣网</a>
+							<a target="_black" href="http://www.pceggs.com/">豆包网</a>
+							<a target="_black" href="http://www.pceggs.com/">乐途网</a>
+							<a target="_black" href="http://www.pceggs.com/">聚宝箱</a>
+							<a target="_black" href="http://www.pceggs.com/">7U网</a>
+							<a target="_black" href="http://www.pceggs.com/">网易联盟</a>
+							<a target="_black" href="http://www.yuwanmao.com/">鱼丸猫</a>
+						</nav>
+					</li>
+					<li>
+						<nav>
+							<a target="_black" href="http://www.yuwanmao.com/hezuo">商务合作</a>
+							<a target="_black" href="http://www.yuwanmao.com/daili">合作代理</a>
+							<a target="_black" href="http://www.yuwanmao.com/im">联系我们</a>
+							<a target="_black" href="http://www.yuwanmao.com/guanyu">关于大鱼</a>
+						</nav>
+					</li>
+				</ul>
+				
+
 			</div>
 		</div>
 	</div>

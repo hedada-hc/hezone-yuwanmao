@@ -4,7 +4,26 @@
 
 	<div class="game_danmu">
 		<div class="game_danmu_tanchuang">
-			<h1>测试发送弹幕</h1>
+			<div class="game_danmu_title">鱼丸弹幕系统</div>
+			<textarea v-model="DM.DMtext" placeholder="这里输入弹幕内容20字以内！还可以发红包哟" @click="textarea"></textarea>
+			<div class="game_danmu_nav">
+				<svg class="icon icon_hb" aria-hidden="true" @click="showHB">
+				  <use xlink:href="#icon-hongbao1"></use>
+				</svg>
+			</div>
+			<div class="game_danmu_sendhb">
+				<input v-model="DM.DMHBje" type="number" min="1" max="10" name="jinbi" placeholder="Now，打算发多少红包呢？">
+				<input v-model="DM.DMHBnum" type="number" name="num" placeholder="多少人分？">
+				<svg class="icon" aria-hidden="true">
+				  <use xlink:href="#icon-jinbi3"></use>
+				</svg>
+				<p>红包金额最低100金币起，最高500,000金币，最低2人分</p>
+				<span>严厉打击利用红包系统刷注册金币，系统实时监控发现封号</span>
+			</div>
+			<div class="game_danmu_sendDM" @click="sendDM">发送弹幕</div>
+		</div>
+		<div class="game_mask" @click="hide">
+					
 		</div>
 
 		<div class="game_danmu_block"></div>
@@ -53,11 +72,17 @@
 				],
 				left:0,
 				time:90,
+				DM:{
+					"DMtext":'',
+					"DMHBje":null,
+					"DMHBnum":null
+				}
 			}
 		},
 		methods:{
 			sendDanMu(){
-				console.log({"title":"测试弹幕系统啊","nick":"hezone","jinbi":123541325,"headPic":"./images/headPic.jpg","type":0})
+				$(".game_mask").show();
+				$(".game_danmu_tanchuang").show();
 			},
 			lottorTime(){
 				if(this.time <= 0){
@@ -76,6 +101,27 @@
 					this.left -= 10;
 					$(".game_danmu_content ul").animate({"left": this.left + "px"})
 				}
+			},
+			hide(){
+				$(".game_mask").hide();
+				$(".game_danmu_tanchuang").hide();
+			},
+			textarea(){
+				$("textarea").attr("style","color:#000000;font-size:16px;");
+			},
+			showHB(){
+				if($(".game_danmu_sendhb").attr("style") == "display: block;"){
+					$(".icon_hb").css({"color":"#afafaf"});
+					$(".game_danmu_sendhb").hide();
+					$(".game_danmu_sendDM").text("发送弹幕");
+				}else{
+					$(".icon_hb").css({"color":"#ff8765"});
+					$(".game_danmu_sendhb").show();
+					$(".game_danmu_sendDM").text("发送红包弹幕");
+				}
+			},
+			sendDM(){
+				console.log(this.DM)
 			}
 		}
 	}
