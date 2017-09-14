@@ -27,33 +27,10 @@
 				</ul>
 			</div>
 
-			<!-- 竞猜开奖进度条 -->
-			<div class="game_isn">
-				<ins></ins>
-			</div>
-			<!-- 开奖时间区域 -->
-			<div class="game_time">
-				<div class="game_time_left">
-					<div class="game_time_left_pic"></div>
-					<div class="game_time_info">
-						<div class="game_time_info_text">
-							第 <span class="game_time_info_qihao">758195</span> 期 离竞猜截止时间，还有 <span class="game_time_info_mm">56</span> 秒
-						</div>
-						<a href="http://www.yuwanmao.com/vip" target="_black" class="game_time_info_vip">
-							开通砖石VIP，领取866万金币
-						</a>
-					</div>
-				</div>
-				<!-- 每期排行榜 -->
-				<gameorderlist></gameorderlist>
-			</div>
-
-			<!-- 弹幕区域 -->
-			<danmu></danmu>
-
-
+			
+			
 			<!-- 竞猜列表区域 -->
-			<gamelotterlist></gamelotterlist>
+			<gamelotter></gamelotter>
 		</div>
 
 		<!-- 个人信息区 -->

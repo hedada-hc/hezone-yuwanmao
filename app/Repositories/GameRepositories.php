@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Model\User;
 use App\Model\UserLotters;
 use App\Model\Lotters;
+use \Curl\Curl;
 
 /**
 * 2017年8月26日17:21:36
@@ -20,13 +21,13 @@ class GameRepositories
 	/*
      * 创建/更新luck28号码
 	*/
-	public function CreateNum($type, $new = true){
+	public function CreateNum($type, $new = true, $lotterTime = 90){
 		if($new){
         	$json = [
         		"num1" => rand(0,9),
         		"num2" => rand(0,9),
         		"num3" => rand(0,9),
-        		"lotter_time" => date("m-d h:i"),
+        		"lotter_time" => date("m-d H:i:s",time()+$lotterTime), 
         		"game_type" => $type,
         		"odds" => json_encode($this->defaultLuck28Odds),
                 "islotter" => 1
@@ -37,7 +38,7 @@ class GameRepositories
                 "num1" => null,
                 "num2" => null,
                 "num3" => null,
-                "lotter_time" => date("m-d h:i"),
+                "lotter_time" => strlen($lotterTime) == 10 ? date("m-d H:i:s",$lotterTime) : date("m-d H:i:s",time()+$lotterTime), 
                 "game_type" => $type,
                 "odds" => json_encode($this->defaultLuck28Odds)
             ];
@@ -47,36 +48,78 @@ class GameRepositories
 	}
 
     /**
-     * 更新待开奖数据
+     * 获取待开奖数据
      * @param  sss
     */
-    public function UpdateGuess(){
+    public function UpdateGuess($getTime = false){
+        //$request = new Curl();
+        //$response = $request->get("http://api.k780.com:88/?app=life.time&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json");
+        //设置为LAX  时区
         $data = Lotters::where('islotter',0)->limit(20)->latest("created_at")->get();
-        $test = collect($data)->map(function($item){
-            if($item->islotter == 0 && $item->lotter_res == null && $item->num1 == null && $item->num2 == null && $item->num3 == null){
-                return $item;
-            }
-        })->toArray();
-        //array_filter 去掉数组中的null值
-        return $this->arraySort($test, "id",SORT_DESC);
-
-    }
-
-    public function arraySort($multi_array,$sort_key,$sort=SORT_ASC){
-        if(is_array($multi_array)){
-            foreach ($multi_array as $row_array){
-                if(is_array($row_array)){
-                    $key_array[] = $row_array[$sort_key];
-                }else{
-                    return false;
-                }
-            }
-        }else{
-            return false;
+        $last = collect($data)->filter(function($value, $key){
+            return $value->islotter == 0 && $value->lotter_res == null && $value->num1 == null;
+        });
+        if($last->count() == 0){
+            return $this->initLotter();
         }
-        array_multisort($key_array,$sort,$multi_array);
-        return $multi_array;
+        //array_filter 去掉数组中的null值
+        // last 获取最后一个
+        $lotter = $last->sortByDesc('id')->last();
+        $nowTime = time();
+        $lotterTime = strtotime(date("Y-").$lotter->lotter_time);
+        if($getTime){
+            return ["lotterTime" => $lotterTime, "qihao" => $lotter->id];
+        }
+        //获取最新一起未开奖数据
+        $key = $last->count() - 2;
+        $toLotter = $last->toArray()[$key];
+        $toLotterTime = strtotime(date("Y-").$toLotter['lotter_time']);
+        if($nowTime >=  $lotterTime && ($nowTime - $toLotterTime) >= -89 || $nowTime >= $toLotterTime){
+            //获取最新一起未开奖时间
+            $newLotterTime = $last->first();
+            //更新开奖
+            $tmp = $this->CreateNum(1);
+            $kaijiang = Lotters::where("id",$lotter->id)->update([
+                "num1"=> $tmp['num1'],
+                "num2"=> $tmp['num2'],
+                "num3"=> $tmp['num3'],
+                "lotter_res"=> $tmp['lotter_res'],
+                "islotter"=> 1,
+                "odds"=> $tmp['odds']
+                ]);
+            //填充新的一期
+            return Lotters::create($this->CreateNum(1, false, strtotime(date("Y-").$newLotterTime->lotter_time) + 90));
+        }
+
+        return response()->json(["now_time" => date("Y-m-d H:i:s",time()),"nowTime" => $nowTime, "toLotterTime" => $nowTime - $toLotterTime, "lotterTime" => $lotterTime, "geshi" => date("Y-m-d H:i:s",$lotterTime), "test" => abs($nowTime - $lotterTime)]);
     }
+
+    /**
+     * 初始化开奖
+     * 初始化 新增5期未开
+    */
+    public function initLotter(){
+        $numTime = 0;
+        for($i = 0;$i<5;$i++){
+            $tmp = $this->CreateNum(1,false);
+            if($i == 0){
+                $tmp['lotter_time'] = date("m-d H:i:s",time()).":00";  
+            }else{
+                $tmp['lotter_time'] = date("m-d H:i:s",time() + ( $numTime * 90));  
+            }  
+            $numTime += 1;
+            Lotters::create($tmp);        
+        }
+        return "kaishile";
+    } 
+
+    /*
+     * 获取走势数据
+    */
+    public function queryZouShi($game_id){
+        return Lotters::select(["id","lotter_res"])->where(["game_type" => $game_id, "islotter" => 1])->latest("created_at")->limit(200)->get();
+    }
+
 }
 
 ?>

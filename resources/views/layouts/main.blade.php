@@ -8,7 +8,8 @@
 	<meta name="description" content=鱼丸猫是一个网络兼职平台，用户通过完成“玩游戏赚钱、打码赚钱、完成任务”等操作，来实现网上赚钱，让用户能在工作之余或者玩游戏的同时赚到钱。>
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="stylesheet" type="text/css" href="{{mix('css/index.css')}}">
-	<script type="text/javascript" src="./fonts/ali/iconfont.js"></script>
+	<script type="text/javascript" src="{{mix('js/md5.js')}}"></script>
+	<script type="text/javascript" src="{{mix('/fonts/ali/iconfont.js')}}"></script>
     <style type="text/css">
         .icon {
            width: 1em; height: 1em;
@@ -29,15 +30,20 @@
 			<ul>
 				<li>累计发放奖励: <span class="gloden">290,368,697,152</span></li>
 				<li>今日兑换金币: <span class="gloden">1,368,697,152</span></li>
+				<li class="head_top_right"><a href="/logout">退出登录</a></li>
 				<li class="head_top_right">牛人榜</li>
 				<li class="head_top_line"></li>
 				<li class="head_top_right">客服中心</li>
 				<li class="head_top_line"></li>
 				<li class="head_top_right head_top_vip">VIP会员</li>
 				<li class="head_top_line"></li>
+				@if(Auth::user())
+				<li class="head_top_right"><a href="/member">{{Auth::user()->name}}</a></li>
+				@else
 				<li class="head_top_right head_top_reg"><a href="#">注册<span class="head_top_reward">奖2元</span></a></li>
 				<li class="head_top_line"></li>
 				<li class="head_top_right"><a v-on:click="login">登录</a></li>
+				@endif
 			</ul>
 
 			<div class="head_min">
@@ -47,16 +53,16 @@
 			<div class="head_nav">
 				<ul>
 					<li ><a href="{{url('/')}}">首页</a></li>
-					<li><a href="#">新人活动</a></li>
-					<li><a href="#">游戏试玩</a></li>
-					<li><a href="#">玩棋牌</a></li>
-					<li><a href="#">广告体验</a></li>
-					<li class="head_nav_select"><a href="#">娱乐大厅</a></li>
-					<li><a href="#">购物返利</a></li>
-					<li><a href="#">邀请好友</a></li>
-					<li><a href="#">兑换商城</a></li>
-					<li class="head_nav_right"><a href="#">讨论区</a></li>
-					<li class="head_nav_right"><a href="#">晒奖</a></li>
+					<li><a href="{{url('/people')}}">新人活动</a></li>
+					<li><a href="{{url('/pspgame')}}">游戏试玩</a></li>
+					<li><a href="{{url('/chess')}}">玩棋牌</a></li>
+					<li><a href="{{url('/ad')}}">广告体验</a></li>
+					<li class="head_nav_select"><a href="{{url('/game')}}">娱乐大厅</a></li>
+					<li><a href="{{url('/fanli')}}">购物返利</a></li>
+					<li><a href="{{url('/invite')}}">邀请好友</a></li>
+					<li><a href="{{url('/shop')}}">兑换商城</a></li>
+					<li class="head_nav_right"><a href="{{url('/bbs')}}">讨论区</a></li>
+					<li class="head_nav_right"><a href="{{url('/saijiang')}}">晒奖</a></li>
 				</ul>
 			</div>
 		</div>
@@ -64,7 +70,6 @@
 <!-- 头部结束 -->
 
 	@yield('content')
-
 <!-- 底部区域 -->
 <div class="footer">
 	<div class="footer_top">

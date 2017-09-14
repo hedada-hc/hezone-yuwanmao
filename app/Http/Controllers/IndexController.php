@@ -14,7 +14,7 @@ class IndexController extends Controller
 	}
     public function index(Request $request){
 		
-    	return view('index');
+    	return view('game.game');
     }
 
     /*
@@ -69,5 +69,14 @@ class IndexController extends Controller
     			dd("no!`");
     		}
     	}
+    }
+
+    public function home(){
+        
+        return view("welcome");
+    }
+
+    public function geetestView(){
+        return view("home");
     }
 }

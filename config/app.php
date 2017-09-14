@@ -3,16 +3,6 @@
 return [
 
     /*
-     * 容联云通讯短信模块
-    */
-    'accountSid' => "8a216da8584bf8cf01584c49bb3000a6",
-    'accountToken' => "486e344df243439ca9f11e4644a74682",
-    'appId' => "8a216da8584bf8cf01584c49bbbb00ab",
-    'serverIP' => "app.cloopen.com",
-    'serverPort' => "8883",
-    'softVersion' => "2013-12-26",
-
-    /*
     |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------
@@ -87,7 +77,7 @@ return [
     |
     */
 
-    'locale' => 'zh-cn',
+    'locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -172,12 +162,12 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        
+        Germey\Geetest\GeetestServiceProvider::class,
         /*
          * Package Service Providers...
          */
         Laravel\Tinker\TinkerServiceProvider::class,
-        Unicodeveloper\Emoji\EmojiServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -235,7 +225,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Emoji' => Unicodeveloper\Emoji\Facades\Emoji::class,
+        'Geetest' => Germey\Geetest\Geetest::class,
     ],
 
 ];

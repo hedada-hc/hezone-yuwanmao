@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "39e128cbb419929e07ad08372c3740e4",
+    "content-hash": "c97bad0c6cafa70c8b453a7c92928e43",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -149,6 +149,57 @@
             "time": "2017-05-14T14:47:48+00:00"
         },
         {
+            "name": "germey/geetest",
+            "version": "v3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Germey/LaravelGeetest.git",
+                "reference": "844148dd961d59e70255812359b473f1b4802a7d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/Germey/LaravelGeetest/844148dd961d59e70255812359b473f1b4802a7d.zip",
+                "reference": "844148dd961d59e70255812359b473f1b4802a7d",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "dev-master",
+                "phpunit/phpunit": "~4.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Germey\\Geetest\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Germey",
+                    "email": "cqc@cuiqingcai.com"
+                }
+            ],
+            "description": "Geetest Package for Laravel5",
+            "keywords": [
+                "Germey",
+                "geetest",
+                "laravel"
+            ],
+            "time": "2017-07-11T02:32:21+00:00"
+        },
+        {
             "name": "jakub-onderka/php-console-color",
             "version": "0.1",
             "source": {
@@ -237,16 +288,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.4.34",
+            "version": "v5.4.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "eaa09c998b315af9fbec04ad29ecfbfd2aa88aeb"
+                "reference": "54aa18a4e8495c4b6902d9665ec9fa4d3a1f3d2e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/laravel/framework/eaa09c998b315af9fbec04ad29ecfbfd2aa88aeb.zip",
-                "reference": "eaa09c998b315af9fbec04ad29ecfbfd2aa88aeb",
+                "url": "https://files.phpcomposer.com/files/laravel/framework/54aa18a4e8495c4b6902d9665ec9fa4d3a1f3d2e.zip",
+                "reference": "54aa18a4e8495c4b6902d9665ec9fa4d3a1f3d2e",
                 "shasum": ""
             },
             "require": {
@@ -362,7 +413,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-08-23T20:31:28+00:00"
+            "time": "2017-08-24T12:30:18+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -785,6 +836,63 @@
             "time": "2017-03-13T16:27:32+00:00"
         },
         {
+            "name": "php-curl-class/php-curl-class",
+            "version": "7.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-curl-class/php-curl-class.git",
+                "reference": "0dcf0230ef7b1cc49d5f8c1a3457acb325ab3707"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://files.phpcomposer.com/files/php-curl-class/php-curl-class/0dcf0230ef7b1cc49d5f8c1a3457acb325ab3707.zip",
+                "reference": "0dcf0230ef7b1cc49d5f8c1a3457acb325ab3707",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Curl\\": "src/Curl/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Unlicense"
+            ],
+            "authors": [
+                {
+                    "name": "Zach Borboa"
+                }
+            ],
+            "description": "PHP Curl Class makes it easy to send HTTP requests and integrate with web APIs.",
+            "homepage": "https://github.com/php-curl-class/php-curl-class",
+            "keywords": [
+                "api",
+                "class",
+                "client",
+                "curl",
+                "framework",
+                "http",
+                "http client",
+                "json",
+                "php",
+                "requests",
+                "rest",
+                "restful",
+                "web service",
+                "xml"
+            ],
+            "time": "2017-06-27T23:57:16+00:00"
+        },
+        {
             "name": "psr/log",
             "version": "1.0.2",
             "source": {
@@ -903,58 +1011,6 @@
                 "shell"
             ],
             "time": "2017-07-29T19:30:02+00:00"
-        },
-        {
-            "name": "pusher/pusher-php-server",
-            "version": "3.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/pusher/pusher-http-php.git",
-                "reference": "a013bd4190e12422365e559b309f54ec50cbd0dd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://files.phpcomposer.com/files/pusher/pusher-http-php/a013bd4190e12422365e559b309f54ec50cbd0dd.zip",
-                "reference": "a013bd4190e12422365e559b309f54ec50cbd0dd",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": "^5.4 || ^7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8 || ^5.7"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Pusher\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Library for interacting with the Pusher REST API",
-            "keywords": [
-                "events",
-                "messaging",
-                "php-pusher-server",
-                "publish",
-                "push",
-                "pusher",
-                "real time",
-                "real-time",
-                "realtime",
-                "rest",
-                "trigger"
-            ],
-            "time": "2017-07-10T09:21:10+00:00"
         },
         {
             "name": "ramsey/uuid",
@@ -1888,58 +1944,6 @@
             "time": "2016-09-20T12:50:39+00:00"
         },
         {
-            "name": "unicodeveloper/laravel-emoji",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/unicodeveloper/laravel-emoji.git",
-                "reference": "df5ce0b221521cf5a3850382c9487f3b80328105"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://files.phpcomposer.com/files/unicodeveloper/laravel-emoji/df5ce0b221521cf5a3850382c9487f3b80328105.zip",
-                "reference": "df5ce0b221521cf5a3850382c9487f3b80328105",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "5.*",
-                "php": "^7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*",
-                "satooshi/php-coveralls": "^0.7.0",
-                "scrutinizer/ocular": "~1.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Unicodeveloper\\Emoji\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "unicodeveloper",
-                    "email": "prosperotemuyiwa@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A Laravel 5 Package for Using & Working With Emojis",
-            "keywords": [
-                "emoji",
-                "github",
-                "laravel",
-                "laravel 5",
-                "open source",
-                "php",
-                "unicode"
-            ],
-            "time": "2016-02-08T06:28:24+00:00"
-        },
-        {
             "name": "vlucas/phpdotenv",
             "version": "v2.4.0",
             "source": {
@@ -2179,7 +2183,7 @@
             ],
             "authors": [
                 {
-                    "name": "Padraic Brady",
+                    "name": "Pádraic Brady",
                     "email": "padraic.brady@gmail.com",
                     "homepage": "http://blog.astrumfutura.com"
                 },

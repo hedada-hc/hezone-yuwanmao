@@ -21,7 +21,7 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * The application's route middleware groups. 
+     * The application's route middleware groups.
      *
      * @var array
      */
@@ -47,7 +47,7 @@ class Kernel extends HttpKernel
      *
      * These middleware may be assigned to groups or used individually.
      *
-     * @var array   GameAuthVerify
+     * @var array
      */
     protected $routeMiddleware = [
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
@@ -55,8 +55,8 @@ class Kernel extends HttpKernel
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'lotter' => \App\Http\Middleware\GameAuthVerify::class,
-
+        'betting' => \App\Http\Middleware\BettingVerify::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     ];
 }

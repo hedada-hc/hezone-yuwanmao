@@ -15,10 +15,10 @@
 	    <td>{{item.id}}</td>
 	    <td>{{item.lotter_time}}</td>
 
-	    <td v-if="item.num1">{{item.num1}}+{{item.num2}}+{{item.num3}}=<span class="game_luck_num">{{item.lotter_res}}</span></td>
+	    <td v-if="item.islotter">{{item.num1}}+{{item.num2}}+{{item.num3}}=<span class="game_luck_num">{{item.lotter_res}}</span></td>
 	    <td v-else><span class="game_luck_num game_luck_x">?</span></td>
 
-	    <td>25,351,631,112</td>
+	    <td>351,631,112</td>
 	    <td class="game_luck_zhong"><a href="#">{{item.lotter_count}}</a></td>
 	    <td>
 	    	<span class="game_luck_shou">收:24,531,971</span>
@@ -55,4 +55,6 @@
 			}
 		}
 	}
+	
+});
 </script>
